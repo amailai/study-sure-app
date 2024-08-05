@@ -7,15 +7,22 @@
 
 import SwiftUI
 import MapKit
+import Firebase
+import FirebaseFirestore
+import FirebaseFirestoreSwift
 
 struct CafeDetailView: View {
     var cafe: Cafe
     let images = ["farine", "farine2", "farine3"]
+    @StateObject private var reviewsViewModel = ReviewsViewModel()
     @State private var showReview = false
     @State private var review = ""
+    @State private var rating: Double = 0
 
     var body: some View {
         ZStack {
+//            Color(hex: "#fbd3ce")
+//                .ignoresSafeArea()
             ScrollView {
                 VStack(alignment: .leading) {
                     Text(cafe.mapItem.name ?? "Unknown Cafe")
@@ -51,17 +58,37 @@ struct CafeDetailView: View {
                     .frame(height: 300)
                     
                     // Keywords of the cafe
-                    HStack {
-                        KeywordView(text: "comfy seating")
-                        KeywordView(text: "vegan/gf options")
-                    }
+                    //                    HStack {
+                    //                        KeywordView(text: "comfy seating")
+                    //                        KeywordView(text: "vegan/gf options")
+                    //                    }
+                    //
+                    //                    HStack {
+                    //                        KeywordView(text: "good coffee")
+                    //                        KeywordView(text: "often busy")
+                    //                    }
+                    //
+                    //                    Spacer()
                     
-                    HStack {
-                        KeywordView(text: "good coffee")
-                        KeywordView(text: "often busy")
+                   // section for reviews
+                    Text("Reviews")
+                        .font(.headline)
+                        .padding(.top)
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            if !reviewsViewModel.reviews.isEmpty {
+                                                ForEach(reviewsViewModel.reviews) { review in
+                                                    ReviewView(review: review)
+                                                        .frame(width: 250) // set a fixed width for each review
+                                                        .padding(.trailing, 5) // space between reviews
+                                                }
+                            } else {
+                                Text("No reviews yet. Be the first to write one!")
+                                    .padding()
+                            }
+                        }
                     }
-                    
-                    Spacer()
+                    .frame(height: 150) // set the height for the reviews section
                 }
                 .padding()
             }
@@ -89,9 +116,14 @@ struct CafeDetailView: View {
 
             // Review Pop-Up
             if showReview {
-                ReviewPopup(showReview: $showReview, review: $review)
+                ReviewPopup(showReview: $showReview, review: $review, rating: $rating, cafeId: cafe.identifier)
             }
+
+            
         }
+        .onAppear {
+                   reviewsViewModel.fetchReviews(forCafe: cafe.identifier)  // Fetch reviews when the view appears
+               }
     }
 }
 
@@ -109,46 +141,6 @@ struct KeywordView: View {
     }
 }
 
-struct ReviewPopup: View {
-    @Binding var showReview: Bool
-    @Binding var review: String
-
-    var body: some View {
-        VStack {
-            Text("Add a Review")
-                .font(.headline)
-                .padding()
-
-            TextField("Write your review...", text: $review)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-
-            Button("Submit") {
-                // Handle the review submission here
-                print("Review submitted: \(review)")
-                withAnimation {
-                    showReview = false
-                }
-            }
-            .padding()
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .clipShape(RoundedRectangle(cornerRadius: 10))
-            
-            Button("Cancel") {
-                withAnimation {
-                    showReview = false
-                }
-            }
-            .padding()
-        }
-        .frame(width: UIScreen.main.bounds.width, height: 250)
-        .background(Color.white)
-        .cornerRadius(20)
-        .shadow(radius: 10)
-        .transition(.move(edge: .bottom))
-    }
-}
 
 
 

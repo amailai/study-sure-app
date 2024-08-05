@@ -43,6 +43,8 @@ struct CafeView: View {
                     }
                 }
                 .navigationTitle("Nearby Study Spots")
+//                .background(Color(hex: "#fbd3ce")
+//                    .ignoresSafeArea())
             }
         }
     }

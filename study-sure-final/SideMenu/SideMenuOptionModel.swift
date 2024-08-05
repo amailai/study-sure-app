@@ -11,8 +11,10 @@ enum SideMenuOptionModel: Int, CaseIterable {
     case home
     case profile
     case cafes
-    case stats
-    case favorites
+    // have stats and favorites commented out right now
+    // can add the functionality for these later
+//    case stats
+//    case favorites
     
     var title: String {
         switch self {
@@ -22,10 +24,10 @@ enum SideMenuOptionModel: Int, CaseIterable {
             return "Profile"
         case .cafes:
             return "Cafes"
-        case .stats:
-            return "Stats"
-        case .favorites:
-            return "Favorites"
+//        case .stats:
+//            return "Stats"
+//        case .favorites:
+//            return "Favorites"
         }
     }
     
@@ -37,10 +39,10 @@ enum SideMenuOptionModel: Int, CaseIterable {
             return "person"
         case .cafes:
             return "cup.and.saucer"
-        case .stats:
-            return "square.and.pencil"
-        case .favorites:
-            return "star"
+//        case .stats:
+//            return "square.and.pencil"
+//        case .favorites:
+//            return "star"
         }
     }
     

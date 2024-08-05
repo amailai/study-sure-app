@@ -11,6 +11,8 @@ struct HomeView: View {
     @State private var showMenu = false
     @State private var selectedTab = 0
     @EnvironmentObject var viewModel: AuthViewModel
+    @ObservedObject var locationManager = LocationManager()
+    @State private var closestCafe: Cafe?
     var body: some View {
         // if user logged in already bring to home page
         if let user = viewModel.currentUser {
@@ -20,10 +22,12 @@ struct HomeView: View {
                         Text("Welcome Back " + user.fullName)
                             .padding()
                             .foregroundColor(.white)
-                            .background(.orange)
+                            .background(.blue)
                             .cornerRadius(10)
                             .padding()
+                        
                             .tag(0)
+                        
                 
                         ProfileView()
                             .tag(1)
@@ -31,11 +35,11 @@ struct HomeView: View {
                         CafeView()
                             .tag(2)
                         
-                        StatsView()
-                            .tag(3)
-                        
-                        FavoritesView()
-                            .tag(4)
+//                        StatsView()
+//                            .tag(3)
+//                        
+//                        FavoritesView()
+//                            .tag(4)
                     }
     
                     
@@ -46,7 +50,7 @@ struct HomeView: View {
                 // this line below hides the navigation bar
                 // when the tool bar is open
                 .toolbar(showMenu ? .hidden: .visible, for: .navigationBar)
-                .navigationTitle("Home")
+//                .navigationTitle("Home")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar{
                     ToolbarItem(placement: .topBarLeading) {
@@ -58,20 +62,6 @@ struct HomeView: View {
                         
                     }
                 }
-//                Text("Last Study Session: 50 mins")
-//                    .padding()
-//                    .foregroundColor(.white)
-//                    .background(.orange)
-//                    .cornerRadius(10)
-//                    .padding()
-//                Spacer()
-//                
-//                Text("Closest Cafe: Starbucks 5.7 Miles")
-//                    .padding()
-//                    .foregroundColor(.white)
-//                    .background(.orange)
-//                    .cornerRadius(10)
-//                    .padding()
             }
         }
     }
