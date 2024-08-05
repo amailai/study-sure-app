@@ -8,11 +8,25 @@
 import SwiftUI
 
 struct ReviewView: View {
+    var review: Review // accepts a single review obj
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(alignment: .leading) {
+            // display the rating as stars
+            HStack {
+                ForEach(0..<Int(review.rating), id: \.self) { _ in
+                    Image(systemName: "star.fill")
+                        .foregroundColor(.yellow)
+                }
+            }
+            Text(review.comment)
+                .font(.subheadline)
+                .padding()
+        }
+        .padding()
+        .background(Color.secondary.opacity(0.1))
+        .cornerRadius(8)
     }
 }
 
-#Preview {
-    ReviewView()
-}
+

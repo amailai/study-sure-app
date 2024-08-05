@@ -7,10 +7,14 @@
 
 import SwiftUI
 import MapKit
+import Firebase
+import FirebaseFirestore
+import FirebaseFirestoreSwift
 
 struct CafeDetailView: View {
     var cafe: Cafe
     let images = ["farine", "farine2", "farine3"]
+    @State private var reviewsViewModel = ReviewsViewModel()
     @State private var showReview = false
     @State private var review = ""
 
@@ -51,17 +55,27 @@ struct CafeDetailView: View {
                     .frame(height: 300)
                     
                     // Keywords of the cafe
-                    HStack {
-                        KeywordView(text: "comfy seating")
-                        KeywordView(text: "vegan/gf options")
-                    }
+                    //                    HStack {
+                    //                        KeywordView(text: "comfy seating")
+                    //                        KeywordView(text: "vegan/gf options")
+                    //                    }
+                    //
+                    //                    HStack {
+                    //                        KeywordView(text: "good coffee")
+                    //                        KeywordView(text: "often busy")
+                    //                    }
+                    //
+                    //                    Spacer()
                     
-                    HStack {
-                        KeywordView(text: "good coffee")
-                        KeywordView(text: "often busy")
-                    }
+                   // section for reviews
+                    if !reviewsViewModel.reviews.isEmpty {
+                                        ForEach(reviewsViewModel.reviews) { review in
+                                            ReviewView(review: review)
+                                        }
+                                    } else {
+                                        Text("No reviews yet. Be the first to write one!")
+                                    }
                     
-                    Spacer()
                 }
                 .padding()
             }
@@ -89,9 +103,14 @@ struct CafeDetailView: View {
 
             // Review Pop-Up
             if showReview {
-                ReviewPopup(showReview: $showReview, review: $review)
+                ReviewPopup(showReview: $showReview, review: $review, cafeId: cafe.identifier)
             }
+
+            
         }
+        .onAppear {
+                   reviewsViewModel.fetchReviews(forCafe: cafe.identifier)  // Fetch reviews when the view appears
+               }
     }
 }
 
@@ -110,8 +129,10 @@ struct KeywordView: View {
 }
 
 struct ReviewPopup: View {
+    @EnvironmentObject var viewModel: AuthViewModel
     @Binding var showReview: Bool
     @Binding var review: String
+    var cafeId: String
 
     var body: some View {
         VStack {
@@ -125,7 +146,7 @@ struct ReviewPopup: View {
 
             Button("Submit") {
                 // Handle the review submission here
-                print("Review submitted: \(review)")
+                submitReview()
                 withAnimation {
                     showReview = false
                 }
@@ -147,6 +168,25 @@ struct ReviewPopup: View {
         .cornerRadius(20)
         .shadow(radius: 10)
         .transition(.move(edge: .bottom))
+    }
+    
+    func submitReview() {
+        guard let userId = viewModel.userSession?.uid else {
+            print("error: user is not logged in")
+            return
+        }
+        let newReview = Review(userId: userId, cafeId: cafeId, rating: 5.0, comment: review)
+        let db = Firestore.firestore()
+        do {
+            try db.collection("reviews").addDocument(from: newReview)
+            print("Review added successfully")
+        } catch let error {
+            print("Error adding review: \(error.localizedDescription)")
+        }
+        withAnimation {
+            showReview = false
+            review = "" // clear the review input field
+        }
     }
 }
 
