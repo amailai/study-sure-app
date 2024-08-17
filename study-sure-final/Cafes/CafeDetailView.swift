@@ -57,19 +57,6 @@ struct CafeDetailView: View {
                     .tabViewStyle(PageTabViewStyle())
                     .frame(height: 300)
                     
-                    // Keywords of the cafe
-                    //                    HStack {
-                    //                        KeywordView(text: "comfy seating")
-                    //                        KeywordView(text: "vegan/gf options")
-                    //                    }
-                    //
-                    //                    HStack {
-                    //                        KeywordView(text: "good coffee")
-                    //                        KeywordView(text: "often busy")
-                    //                    }
-                    //
-                    //                    Spacer()
-                    
                    // section for reviews
                     Text("Reviews")
                         .font(.headline)
@@ -127,19 +114,7 @@ struct CafeDetailView: View {
     }
 }
 
-struct KeywordView: View {
-    var text: String
 
-    var body: some View {
-        Text(text)
-            .padding()
-            .foregroundColor(.gray)
-            .overlay(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(Color.gray, lineWidth: 2)
-            )
-    }
-}
 
 
 

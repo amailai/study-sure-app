@@ -17,6 +17,9 @@ struct ReviewPopup: View {
     @Binding var review: String
     @Binding var rating: Double
     var cafeId: String
+    @State private var selectedKeywords: [String] = []
+    
+    let allKeywords = ["Cozy", "Spacious", "Quiet", "Busy", "Friendly Staff", "Great Coffee", "Affordable"]
 
     var body: some View {
         VStack {
@@ -30,9 +33,11 @@ struct ReviewPopup: View {
             TextField("Write your review...", text: $review)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
+            
+            KeywordView(keywords: allKeywords, selectedKeywords: $selectedKeywords)
+                .padding()
 
             Button("Submit") {
-                // Handle the review submission here
                 submitReview()
             }
             .padding()
@@ -45,11 +50,12 @@ struct ReviewPopup: View {
                     showReview = false
                     review = ""
                     rating = 0
+                    selectedKeywords = []
                 }
             }
             .padding()
         }
-        .frame(width: UIScreen.main.bounds.width, height: 350)
+        .frame(width: UIScreen.main.bounds.width, height: 400)
         .background(Color.white)
         .cornerRadius(20)
         .shadow(radius: 10)
@@ -61,7 +67,7 @@ struct ReviewPopup: View {
             print("error: user is not logged in")
             return
         }
-        let newReview = Review(userId: userId, cafeId: cafeId, rating: rating, comment: review)
+        let newReview = Review(userId: userId, cafeId: cafeId, rating: rating, comment: review, keywords: selectedKeywords)
         let db = Firestore.firestore()
         do {
             try db.collection("reviews").addDocument(from: newReview)
