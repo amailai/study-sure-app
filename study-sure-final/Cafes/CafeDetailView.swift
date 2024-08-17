@@ -14,15 +14,12 @@ import FirebaseFirestoreSwift
 struct CafeDetailView: View {
     var cafe: Cafe
     let images = ["farine", "farine2", "farine3"]
-    @StateObject private var reviewsViewModel = ReviewsViewModel()
+    @State private var reviewsViewModel = ReviewsViewModel()
     @State private var showReview = false
     @State private var review = ""
-    @State private var rating: Double = 0
 
     var body: some View {
         ZStack {
-//            Color(hex: "#fbd3ce")
-//                .ignoresSafeArea()
             ScrollView {
                 VStack(alignment: .leading) {
                     Text(cafe.mapItem.name ?? "Unknown Cafe")
@@ -71,24 +68,14 @@ struct CafeDetailView: View {
                     //                    Spacer()
                     
                    // section for reviews
-                    Text("Reviews")
-                        .font(.headline)
-                        .padding(.top)
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack {
-                            if !reviewsViewModel.reviews.isEmpty {
-                                                ForEach(reviewsViewModel.reviews) { review in
-                                                    ReviewView(review: review)
-                                                        .frame(width: 250) // set a fixed width for each review
-                                                        .padding(.trailing, 5) // space between reviews
-                                                }
-                            } else {
-                                Text("No reviews yet. Be the first to write one!")
-                                    .padding()
-                            }
-                        }
-                    }
-                    .frame(height: 150) // set the height for the reviews section
+                    if !reviewsViewModel.reviews.isEmpty {
+                                        ForEach(reviewsViewModel.reviews) { review in
+                                            ReviewView(review: review)
+                                        }
+                                    } else {
+                                        Text("No reviews yet. Be the first to write one!")
+                                    }
+                    
                 }
                 .padding()
             }
@@ -116,7 +103,7 @@ struct CafeDetailView: View {
 
             // Review Pop-Up
             if showReview {
-                ReviewPopup(showReview: $showReview, review: $review, rating: $rating, cafeId: cafe.identifier)
+                ReviewPopup(showReview: $showReview, review: $review, cafeId: cafe.identifier)
             }
 
             
@@ -141,6 +128,67 @@ struct KeywordView: View {
     }
 }
 
+struct ReviewPopup: View {
+    @EnvironmentObject var viewModel: AuthViewModel
+    @Binding var showReview: Bool
+    @Binding var review: String
+    var cafeId: String
+
+    var body: some View {
+        VStack {
+            Text("Add a Review")
+                .font(.headline)
+                .padding()
+
+            TextField("Write your review...", text: $review)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+
+            Button("Submit") {
+                // Handle the review submission here
+                submitReview()
+                withAnimation {
+                    showReview = false
+                }
+            }
+            .padding()
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            
+            Button("Cancel") {
+                withAnimation {
+                    showReview = false
+                }
+            }
+            .padding()
+        }
+        .frame(width: UIScreen.main.bounds.width, height: 250)
+        .background(Color.white)
+        .cornerRadius(20)
+        .shadow(radius: 10)
+        .transition(.move(edge: .bottom))
+    }
+    
+    func submitReview() {
+        guard let userId = viewModel.userSession?.uid else {
+            print("error: user is not logged in")
+            return
+        }
+        let newReview = Review(userId: userId, cafeId: cafeId, rating: 5.0, comment: review)
+        let db = Firestore.firestore()
+        do {
+            try db.collection("reviews").addDocument(from: newReview)
+            print("Review added successfully")
+        } catch let error {
+            print("Error adding review: \(error.localizedDescription)")
+        }
+        withAnimation {
+            showReview = false
+            review = "" // clear the review input field
+        }
+    }
+}
 
 
 

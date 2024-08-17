@@ -24,8 +24,6 @@
 		F06AC6FC2C61749B00CCDE15 /* Review.swift in Sources */ = {isa = PBXBuildFile; fileRef = F06AC6FB2C61749B00CCDE15 /* Review.swift */; };
 		F06AC6FE2C618AB300CCDE15 /* ReviewsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F06AC6FD2C618AB300CCDE15 /* ReviewsViewModel.swift */; };
 		F06AC7002C618DB100CCDE15 /* ReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F06AC6FF2C618DB100CCDE15 /* ReviewView.swift */; };
-		F06AC7022C704EF400CCDE15 /* RatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F06AC7012C704EF400CCDE15 /* RatingView.swift */; };
-		F06AC7052C70522D00CCDE15 /* ReviewPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = F06AC7042C70522D00CCDE15 /* ReviewPopup.swift */; };
 		F0AF6FC22C5C432600A294D0 /* CafeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0AF6FC12C5C432600A294D0 /* CafeDetailView.swift */; };
 		F0AF6FC82C5C597000A294D0 /* ColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0AF6FC72C5C597000A294D0 /* ColorManager.swift */; };
 		F0CB09A42C4B2A0B00A05452 /* study_sure_finalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CB09A32C4B2A0B00A05452 /* study_sure_finalApp.swift */; };
@@ -61,8 +59,6 @@
 		F06AC6FB2C61749B00CCDE15 /* Review.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Review.swift; sourceTree = "<group>"; };
 		F06AC6FD2C618AB300CCDE15 /* ReviewsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsViewModel.swift; sourceTree = "<group>"; };
 		F06AC6FF2C618DB100CCDE15 /* ReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewView.swift; sourceTree = "<group>"; };
-		F06AC7012C704EF400CCDE15 /* RatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingView.swift; sourceTree = "<group>"; };
-		F06AC7042C70522D00CCDE15 /* ReviewPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewPopup.swift; sourceTree = "<group>"; };
 		F0AF6FC12C5C432600A294D0 /* CafeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CafeDetailView.swift; sourceTree = "<group>"; };
 		F0AF6FC72C5C597000A294D0 /* ColorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorManager.swift; sourceTree = "<group>"; };
 		F0CB09A02C4B2A0B00A05452 /* study-sure-final.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "study-sure-final.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -100,6 +96,7 @@
 				F0410E502C595B6700E1538A /* StatsView.swift */,
 				F0410E522C595B7400E1538A /* FavoritesView.swift */,
 				F0410E0F2C57198600E1538A /* LoginView.swift */,
+				F06AC6FF2C618DB100CCDE15 /* ReviewView.swift */,
 				F0AF6FC72C5C597000A294D0 /* ColorManager.swift */,
 				F0410E102C57198600E1538A /* RegistrationView.swift */,
 			);
@@ -137,16 +134,6 @@
 			path = Cafes;
 			sourceTree = "<group>";
 		};
-		F06AC7032C7051FD00CCDE15 /* Reviews */ = {
-			isa = PBXGroup;
-			children = (
-				F06AC7012C704EF400CCDE15 /* RatingView.swift */,
-				F06AC6FF2C618DB100CCDE15 /* ReviewView.swift */,
-				F06AC7042C70522D00CCDE15 /* ReviewPopup.swift */,
-			);
-			path = Reviews;
-			sourceTree = "<group>";
-		};
 		F0CB09972C4B2A0B00A05452 = {
 			isa = PBXGroup;
 			children = (
@@ -166,7 +153,6 @@
 		F0CB09A22C4B2A0B00A05452 /* study-sure-final */ = {
 			isa = PBXGroup;
 			children = (
-				F06AC7032C7051FD00CCDE15 /* Reviews */,
 				F0410E4B2C572D2800E1538A /* SideMenu */,
 				F0410E162C57198600E1538A /* ViewModel */,
 				F0410E8D2C5ADD9D00E1538A /* Cafes */,
@@ -328,8 +314,6 @@
 				F0CB09BB2C4B2D5B00A05452 /* InputView.swift in Sources */,
 				F06AC7002C618DB100CCDE15 /* ReviewView.swift in Sources */,
 				F0410E512C595B6700E1538A /* StatsView.swift in Sources */,
-				F06AC7052C70522D00CCDE15 /* ReviewPopup.swift in Sources */,
-				F06AC7022C704EF400CCDE15 /* RatingView.swift in Sources */,
 				F0410E1A2C57198700E1538A /* RegistrationView.swift in Sources */,
 				F0410E462C572CDA00E1538A /* SideMenuView.swift in Sources */,
 				F06AC6FC2C61749B00CCDE15 /* Review.swift in Sources */,
