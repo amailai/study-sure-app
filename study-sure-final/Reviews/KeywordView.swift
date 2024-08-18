@@ -2,7 +2,7 @@
 //  KeywordView.swift
 //  study-sure-final
 //
-//  Created by Clara O on 8/17/24.
+//  Created by Clara O on 8/18/24.
 //
 
 import SwiftUI
@@ -10,16 +10,14 @@ import SwiftUI
 struct KeywordView: View {
     let keywords: [String]
     @Binding var selectedKeywords: [String]
-    
+
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(keywords, id: \.self) { keyword in
                     Button(action: {
-                        // if keyword already selected then remove it from selection
                         if selectedKeywords.contains(keyword) {
-                            selectedKeywords.removeAll { $0 == keyword }
-                            // else add it in the list
+                            selectedKeywords.removeAll(where: { $0 == keyword })
                         } else {
                             selectedKeywords.append(keyword)
                         }
@@ -33,9 +31,8 @@ struct KeywordView: View {
                     }
                 }
             }
+            .padding(.horizontal, 10)
         }
-        .padding(.horizontal, 10)
     }
 }
-
 

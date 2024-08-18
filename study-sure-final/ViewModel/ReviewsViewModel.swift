@@ -27,9 +27,6 @@ class ReviewsViewModel: ObservableObject {
 
                 self?.reviews = documents.compactMap { document -> Review? in
                     let review = try? document.data(as: Review.self)
-                    if let urls = review?.imageUrls {
-                        self?.allImageUrls.append(contentsOf: urls)
-                    }
                     return review
                 }
             }

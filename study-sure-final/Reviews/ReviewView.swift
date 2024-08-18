@@ -10,6 +10,24 @@ import SwiftUI
 struct ReviewView: View {
     var review: Review // accepts a single review obj
     
+//    var body: some View {
+//        VStack(alignment: .leading) {
+//            // display the rating as stars
+//            HStack {
+//                ForEach(0..<Int(review.rating), id: \.self) { _ in
+//                    Image(systemName: "star.fill")
+//                        .foregroundColor(.yellow)
+//                }
+//            }
+//            Text(review.comment)
+//                .font(.subheadline)
+//                .padding()
+//        }
+//        .padding()
+//        .background(Color.secondary.opacity(0.1))
+//        .cornerRadius(8)
+//    }
+    
     var body: some View {
             VStack(alignment: .leading) {
                 if let userName = review.userName {
@@ -25,22 +43,6 @@ struct ReviewView: View {
                 }
                 Text(review.comment)
                     .padding(.top, 2)
-                
-                // display keywords
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack {
-                        ForEach(review.keywords, id: \.self) { keyword in
-                            Text(keyword)
-                                .padding(5)
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(5)
-                                .padding(.horizontal, 4)
-                        }
-                    }
-                    .padding(.horizontal, 10)
-                }
-                
             }
             .padding()
             .background(Color.secondary.opacity(0.1))

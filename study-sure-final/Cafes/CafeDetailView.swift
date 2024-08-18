@@ -13,7 +13,7 @@ import FirebaseFirestoreSwift
 
 struct CafeDetailView: View {
     var cafe: Cafe
-//    let images = ["farine", "farine2", "farine3"]
+    let images = ["farine", "farine2", "farine3"]
     @StateObject private var reviewsViewModel = ReviewsViewModel()
     @State private var showReview = false
     @State private var review = ""
@@ -75,17 +75,18 @@ struct CafeDetailView: View {
                         
                     }
                     // Photo carousel
-//                    TabView {
-//                        ForEach(images, id: \.self) { imgName in
-//                            Image(imgName)
-//                                .resizable()
-//                                .aspectRatio(contentMode: .fill)
-//                                .clipShape(RoundedRectangle(cornerRadius: 10))
-//                                .padding()
-//                        }
-//                    }
-//                    .tabViewStyle(PageTabViewStyle())
-//                    .frame(height: 300)
+                    TabView {
+                        ForEach(images, id: \.self) { imgName in
+                            Image(imgName)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                .padding()
+                        }
+                    }
+                    .tabViewStyle(PageTabViewStyle())
+                    .frame(height: 300)
+                    
                     
                    // section for reviews
                     Text("Reviews")
@@ -143,7 +144,6 @@ struct CafeDetailView: View {
                }
     }
 }
-
 
 
 
