@@ -13,7 +13,7 @@ import FirebaseFirestoreSwift
 
 struct CafeDetailView: View {
     var cafe: Cafe
-    let images = ["farine", "farine2", "farine3"]
+//    let images = ["farine", "farine2", "farine3"]
     @StateObject private var reviewsViewModel = ReviewsViewModel()
     @State private var showReview = false
     @State private var review = ""
@@ -43,19 +43,49 @@ struct CafeDetailView: View {
                     }
                     
                     Text("Seats Available: " + String(cafe.seatsAvaliable))
-                    
-                    // Photo carousel
-                    TabView {
-                        ForEach(images, id: \.self) { imgName in
-                            Image(imgName)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                                .padding()
+                    if !reviewsViewModel.allImageUrls.isEmpty {
+                        Text("Photos from Reviews")
+                            .font(.headline)
+                            .padding(.vertical)
+                        
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 10) {
+                                ForEach(reviewsViewModel.allImageUrls, id: \.self) { imageUrl in
+                                    if let url = URL(string: imageUrl) {
+                                        AsyncImage(url: url) { phase in
+                                            if let image = phase.image {
+                                                image.resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                    .frame(width: 200, height: 200)
+                                                    .clipped()
+                                                    .cornerRadius(8)
+                                            } else if phase.error != nil {
+                                                Text("error loading image")
+                                                    .foregroundColor(.red)
+                                            } else {
+                                                ProgressView()
+                                            }
+                                        }
+                                    }
+                                    
+                                }
+                            }
                         }
+                        .padding(.horizontal)
+                        
                     }
-                    .tabViewStyle(PageTabViewStyle())
-                    .frame(height: 300)
+                    // Photo carousel
+//                    TabView {
+//                        ForEach(images, id: \.self) { imgName in
+//                            Image(imgName)
+//                                .resizable()
+//                                .aspectRatio(contentMode: .fill)
+//                                .clipShape(RoundedRectangle(cornerRadius: 10))
+//                                .padding()
+//                        }
+//                    }
+//                    .tabViewStyle(PageTabViewStyle())
+//                    .frame(height: 300)
                     
                    // section for reviews
                     Text("Reviews")
