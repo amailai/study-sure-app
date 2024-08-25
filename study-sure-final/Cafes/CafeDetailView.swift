@@ -13,7 +13,7 @@ import FirebaseFirestoreSwift
 
 struct CafeDetailView: View {
     @ObservedObject var cafe: Cafe
-    let images = ["farine", "farine2", "farine3"]
+//    let images = ["farine", "farine2", "farine3"]
     @StateObject private var reviewsViewModel = ReviewsViewModel()
     @State private var showReview = false
     @State private var review = ""
@@ -47,17 +47,51 @@ struct CafeDetailView: View {
                     Text("Seats Available: \(cafe.seatsAvailable)")
     
                     // Photo carousel
-                    TabView {
-                        ForEach(images, id: \.self) { imgName in
-                            Image(imgName)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                                .padding()
+//                    TabView {
+//                        ForEach(images, id: \.self) { imgName in
+//                            Image(imgName)
+//                                .resizable()
+//                                .aspectRatio(contentMode: .fill)
+//                                .clipShape(RoundedRectangle(cornerRadius: 10))
+//                                .padding()
+//                        }
+//                    }
+//                    .tabViewStyle(PageTabViewStyle())
+//                    .frame(height: 300)
+                    
+                    let existingImages = ["farine", "farine2", "farine3"]
+                    let reviewImages = reviewsViewModel.reviews.flatMap { $0.imageUrls }
+                    let allImages = existingImages.map { ImageItem(imageUrl: nil, imageName: $0) } +
+                                    reviewImages.map { ImageItem(imageUrl: $0, imageName: nil) }
+                    // Display photos associated with the cafe's reviews
+                    if !allImages.isEmpty {
+                        TabView {
+                            ForEach(allImages, id: \.id) { imageItem in
+                                if let imageName = imageItem.imageName {
+                                    Image(imageName)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(height: 300)
+                                        .clipped()
+                                        .cornerRadius(10)
+                                        .padding()
+                                } else if let imageUrl = imageItem.imageUrl {
+                                    AsyncImage(url: URL(string: imageUrl)) { image in
+                                        image.resizable()
+                                            .scaledToFill()
+                                    } placeholder: {
+                                        ProgressView()
+                                    }
+                                    .frame(height: 300)
+                                    .clipped()
+                                    .cornerRadius(10)
+                                    .padding()
+                                }
+                            }
                         }
+                        .tabViewStyle(PageTabViewStyle())
+                        .frame(height: 300)
                     }
-                    .tabViewStyle(PageTabViewStyle())
-                    .frame(height: 300)
                     
                     
                    // section for reviews
@@ -138,6 +172,13 @@ struct CafeDetailView: View {
         }
     }
 }
+
+struct ImageItem: Identifiable {
+    var id = UUID()
+    var imageUrl: String?
+    var imageName: String?
+}
+                                                                                                                                    
 
 
 
