@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F00135122C728A0F00F87268 /* KeywordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00135112C728A0F00F87268 /* KeywordView.swift */; };
+		F00135142C7BD13A00F87268 /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00135132C7BD13A00F87268 /* UserViewModel.swift */; };
 		F0410E182C57198700E1538A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0410E0E2C57198600E1538A /* HomeView.swift */; };
 		F0410E192C57198700E1538A /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0410E0F2C57198600E1538A /* LoginView.swift */; };
 		F0410E1A2C57198700E1538A /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0410E102C57198600E1538A /* RegistrationView.swift */; };
@@ -46,6 +47,7 @@
 
 /* Begin PBXFileReference section */
 		F00135112C728A0F00F87268 /* KeywordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeywordView.swift; sourceTree = "<group>"; };
+		F00135132C7BD13A00F87268 /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
 		F0410E0E2C57198600E1538A /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		F0410E0F2C57198600E1538A /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		F0410E102C57198600E1538A /* RegistrationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
@@ -224,6 +226,7 @@
 			children = (
 				F0CB09C22C4B3E9300A05452 /* User.swift */,
 				F06AC6FB2C61749B00CCDE15 /* Review.swift */,
+				F00135132C7BD13A00F87268 /* UserViewModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -325,6 +328,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F00135122C728A0F00F87268 /* KeywordView.swift in Sources */,
+				F00135142C7BD13A00F87268 /* UserViewModel.swift in Sources */,
 				F0CB09C12C4B3AA800A05452 /* SettingsView.swift in Sources */,
 				F0410E4A2C572D0A00E1538A /* SideMenuHeaderView.swift in Sources */,
 				F06AC6FE2C618AB300CCDE15 /* ReviewsViewModel.swift in Sources */,

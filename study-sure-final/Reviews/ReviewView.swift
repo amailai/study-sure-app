@@ -9,14 +9,17 @@ import SwiftUI
 
 struct ReviewView: View {
     var review: Review // accepts a single review obj
+    @StateObject private var userViewModel = UserViewModel()
     
     var body: some View {
             VStack(alignment: .leading) {
-                if let userName = review.userName {
-                    Text(userName)
-                        .font(.headline)
-                        .foregroundColor(.secondary)
-                }
+                Text(userViewModel.userName)
+                    .font(.headline)
+                    .foregroundColor(.primary)
+                    .onAppear {
+                        userViewModel.fetchUserName(userId: review.userId)
+                    }
+                
                 HStack {
                     ForEach(1...5, id: \.self) { index in
                         Image(systemName: index <= Int(review.rating) ? "star.fill" : "star")

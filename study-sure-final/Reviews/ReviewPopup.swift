@@ -88,7 +88,13 @@ struct ReviewPopup: View {
             return
         }
         
-        let newReview = Review(userId: userId, cafeId: cafeId, rating: rating, comment: review, keywords: selectedKeywords)
+        let newReview = Review(
+            userId: userId,
+            cafeId: cafeId,
+            rating: rating,
+            comment: review,
+            keywords: selectedKeywords
+        )
         
         let db = Firestore.firestore()
         do {

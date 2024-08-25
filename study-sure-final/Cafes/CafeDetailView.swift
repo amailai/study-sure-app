@@ -106,7 +106,13 @@ struct CafeDetailView: View {
 
             // Review Pop-Up
             if showReview {
-                ReviewPopup(showReview: $showReview, review: $review, rating: $rating, cafeId: cafe.identifier, totalSeats: cafe.seatsAvailable)
+                ReviewPopup(
+                    showReview: $showReview,
+                    review: $review,
+                    rating: $rating,
+                    cafeId: cafe.identifier,
+                    totalSeats: cafe.seatsAvailable
+                )
             }
 
             
