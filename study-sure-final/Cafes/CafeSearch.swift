@@ -107,20 +107,11 @@ func searchCafes(near location: CLLocation, completion: @escaping ([Cafe]) -> Vo
                 dispatchGroup.leave()
             }
             
-            // optionally save cafe details to Firestore if this is the first time it's being added
-//            cafe.saveToFirestore()
         }
         
         dispatchGroup.notify(queue: .main) {
             completion(cafes)
         }
-//        let cafes = response.mapItems.map { mapItem -> Cafe in
-//            let distance = mapItem.placemark.location?.distance(from: location) ?? 0
-//            let cafe = Cafe(mapItem: mapItem, distance: distance, seatsAvailable: 60)
-//            cafe.saveToFirestore() // optionally save cafe details to fire store
-//            return cafe
-//        }
-//        completion(cafes)
     }
     
 }
