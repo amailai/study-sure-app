@@ -21,7 +21,7 @@ struct ReviewPopup: View {
     @State private var selectedKeywords: [String] = []
     
     var cafeId: String
-    var totalSeats: Int // pass total number of seats
+    var maxSeats: Int // pass total number of seats
     
     
     let allKeywords = ["Cozy", "Spacious", "Quiet", "Busy", "Friendly Staff", "Great Coffee", "Affordable"]
@@ -42,7 +42,7 @@ struct ReviewPopup: View {
             KeywordView(keywords: allKeywords, selectedKeywords: $selectedKeywords)
                 .padding()
             
-            TextField("Avaliable Seats (out of \(totalSeats))", text: $availableSeats)
+            TextField("Avaliable Seats (out of \(maxSeats))", text: $availableSeats)
                 .keyboardType(.numberPad)
                 .padding()
                 .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -83,8 +83,8 @@ struct ReviewPopup: View {
         }
         
         // guard on proper number of seats
-        guard let seats = Int(availableSeats), seats <= totalSeats else {
-            print("Invalid number of seats")
+        guard let seats = Int(availableSeats), seats <= maxSeats else {
+            print("Invalid number of seats. Must be between 0 and \(maxSeats).")
             return
         }
         

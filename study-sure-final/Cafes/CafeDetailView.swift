@@ -111,7 +111,7 @@ struct CafeDetailView: View {
                     review: $review,
                     rating: $rating,
                     cafeId: cafe.identifier,
-                    totalSeats: cafe.seatsAvailable
+                    maxSeats: cafe.maxSeats
                 )
             }
 

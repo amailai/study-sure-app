@@ -17,12 +17,14 @@ class Cafe: ObservableObject, Identifiable {
     var distance: CLLocationDistance?
     // currently set to 60 for each cafe, will have to manually set
     // once back in davis or something
+    @Published var maxSeats: Int
     @Published var seatsAvailable: Int
     var identifier: String // use MKMapItem's placeID (unique identifier)
     
-    init(mapItem: MKMapItem, distance: CLLocationDistance?, seatsAvailable: Int = 60) {
+    init(mapItem: MKMapItem, distance: CLLocationDistance?, seatsAvailable: Int = 60, maxSeats: Int = 60) {
         self.mapItem = mapItem
         self.distance = distance
+        self.maxSeats = maxSeats
         self.seatsAvailable = seatsAvailable
         // create a unique identifier from the latitude and longtitude
         // of each cafe
@@ -43,6 +45,11 @@ class Cafe: ObservableObject, Identifiable {
                     self.seatsAvailable = seatsAvailable
                     }
                 }
+                if let maxSeats = document.data()?["maxSeats"] as? Int {
+                    DispatchQueue.main.async {
+                        self.maxSeats = maxSeats
+                    }
+                }
                     
             } else {
                 print("Document does not exists or error: \(error?.localizedDescription ?? "Unknown error")")
@@ -57,7 +64,8 @@ class Cafe: ObservableObject, Identifiable {
             "name" : self.mapItem.name ?? "Unknown Cafe",
             "address" : self.mapItem.placemark.title ?? "No Address",
             "coordinates" : "\(self.mapItem.placemark.coordinate.latitude), \(self.mapItem.placemark.coordinate.longitude)",
-            "seatsAvailable": self.seatsAvailable
+            "seatsAvailable": self.seatsAvailable,
+            "maxSeats": self.maxSeats
         ]) { error in
             if let error = error {
                 print("Error saving cafe: \(error.localizedDescription)")
