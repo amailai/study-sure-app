@@ -12,12 +12,14 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 struct CafeDetailView: View {
-    var cafe: Cafe
+    @ObservedObject var cafe: Cafe
     let images = ["farine", "farine2", "farine3"]
     @StateObject private var reviewsViewModel = ReviewsViewModel()
     @State private var showReview = false
     @State private var review = ""
     @State private var rating: Double = 0
+    @State private var selectedKeywords: [String] = []
+    
 
     var body: some View {
         ZStack {
@@ -42,38 +44,8 @@ struct CafeDetailView: View {
                         }
                     }
                     
-                    Text("Seats Available: " + String(cafe.seatsAvaliable))
-                    if !reviewsViewModel.allImageUrls.isEmpty {
-                        Text("Photos from Reviews")
-                            .font(.headline)
-                            .padding(.vertical)
-                        
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 10) {
-                                ForEach(reviewsViewModel.allImageUrls, id: \.self) { imageUrl in
-                                    if let url = URL(string: imageUrl) {
-                                        AsyncImage(url: url) { phase in
-                                            if let image = phase.image {
-                                                image.resizable()
-                                                    .aspectRatio(contentMode: .fill)
-                                                    .frame(width: 200, height: 200)
-                                                    .clipped()
-                                                    .cornerRadius(8)
-                                            } else if phase.error != nil {
-                                                Text("error loading image")
-                                                    .foregroundColor(.red)
-                                            } else {
-                                                ProgressView()
-                                            }
-                                        }
-                                    }
-                                    
-                                }
-                            }
-                        }
-                        .padding(.horizontal)
-                        
-                    }
+                    Text("Seats Available: \(cafe.seatsAvailable)")
+    
                     // Photo carousel
                     TabView {
                         ForEach(images, id: \.self) { imgName in
@@ -134,14 +106,30 @@ struct CafeDetailView: View {
 
             // Review Pop-Up
             if showReview {
-                ReviewPopup(showReview: $showReview, review: $review, rating: $rating, cafeId: cafe.identifier)
+                ReviewPopup(showReview: $showReview, review: $review, rating: $rating, cafeId: cafe.identifier, totalSeats: cafe.seatsAvailable)
             }
 
             
         }
         .onAppear {
-                   reviewsViewModel.fetchReviews(forCafe: cafe.identifier)  // Fetch reviews when the view appears
-               }
+            reviewsViewModel.fetchReviews(forCafe: cafe.identifier)  // Fetch reviews when the view appears
+            
+            let db = Firestore.firestore()
+            db.collection("cafes").document(cafe.identifier).addSnapshotListener { documentSnapshot, error in
+                guard let document = documentSnapshot else {
+                print("Error fetching document: \(error?.localizedDescription ?? "Unknown error")")
+                    return
+                }
+                if let seatsAvailable = document.data()?["seatsAvailable"] as? Int {
+                    DispatchQueue.main.async {
+                        cafe.seatsAvailable = seatsAvailable
+                    }
+                    
+                }
+                    
+                    
+            }
+        }
     }
 }
 

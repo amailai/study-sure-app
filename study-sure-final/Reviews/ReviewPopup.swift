@@ -17,8 +17,11 @@ struct ReviewPopup: View {
     @Binding var showReview: Bool
     @Binding var review: String
     @Binding var rating: Double
-    var cafeId: String
+    @State private var availableSeats: String = "" // string to allow easy input handling
     @State private var selectedKeywords: [String] = []
+    
+    var cafeId: String
+    var totalSeats: Int // pass total number of seats
     
     
     let allKeywords = ["Cozy", "Spacious", "Quiet", "Busy", "Friendly Staff", "Great Coffee", "Affordable"]
@@ -39,6 +42,11 @@ struct ReviewPopup: View {
             KeywordView(keywords: allKeywords, selectedKeywords: $selectedKeywords)
                 .padding()
             
+            TextField("Avaliable Seats (out of \(totalSeats))", text: $availableSeats)
+                .keyboardType(.numberPad)
+                .padding()
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+            
 
             Button("Submit") {
                 // Handle the review submission here
@@ -54,12 +62,13 @@ struct ReviewPopup: View {
                     showReview = false
                     review = ""
                     rating = 0
+                    selectedKeywords = []
                 }
             }
             .padding()
 
         }
-        .frame(width: UIScreen.main.bounds.width, height: 350)
+        .frame(width: UIScreen.main.bounds.width, height: 400)
         .background(Color.white)
         .cornerRadius(20)
         .shadow(radius: 10)
@@ -67,8 +76,15 @@ struct ReviewPopup: View {
     }
     
     func submitReview() {
+        // only let logged in users submit reviews
         guard let userId = viewModel.userSession?.uid else {
             print("Error: user is not logged in")
+            return
+        }
+        
+        // guard on proper number of seats
+        guard let seats = Int(availableSeats), seats <= totalSeats else {
+            print("Invalid number of seats")
             return
         }
         
@@ -78,11 +94,13 @@ struct ReviewPopup: View {
         do {
             try db.collection("reviews").addDocument(from: newReview)
             print("Review added successfully.")
+            updateCafeAvailableSeats(cafeId: cafeId, availableSeats: seats)  // Update cafe info
             withAnimation {
                 showReview = false
                 review = "" // Clear the review input field
                 rating = 0 // Reset rating
                 selectedKeywords = [] // Clear selected keywords
+                availableSeats = "" // Clear seats inut
             }
         } catch let error {
             print("Error adding review: \(error.localizedDescription)")
@@ -90,4 +108,18 @@ struct ReviewPopup: View {
     }
     
 }
+
+private func updateCafeAvailableSeats(cafeId: String, availableSeats: Int) {
+    let db = Firestore.firestore()
+    db.collection("cafes").document(cafeId).updateData([
+        "seatsAvailable": availableSeats 
+    ]) { error in
+        if let error = error {
+            print("Error updating cafe seats: \(error.localizedDescription)")
+        } else {
+            print("Cafe seats updated successfully")
+        }
+    }
+}
+
 

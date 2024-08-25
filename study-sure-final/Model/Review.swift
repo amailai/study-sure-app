@@ -18,6 +18,7 @@ struct Review: Codable, Identifiable {
     var comment: String
     var userName: String? // store user's name
     var keywords: [String] // array to store selected keywords
+    var seatsAvaliable: Int? // store seats avaliable in cafe 
 }
 
 
