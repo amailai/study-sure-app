@@ -87,7 +87,7 @@ struct ReviewPopup: View {
             .padding()
             
         }
-        .frame(width: UIScreen.main.bounds.width, height: 500)
+        .frame(width: UIScreen.main.bounds.width, height: 600)
         .background(Color.white)
         .cornerRadius(20)
         .shadow(radius: 10)

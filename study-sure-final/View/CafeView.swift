@@ -11,11 +11,29 @@ import MapKit
 struct CafeView: View {
     @ObservedObject var locationManager = LocationManager()
     @State private var cafes: [Cafe] = []
+    @State private var searchText = ""
 
     var body: some View {
         ZStack {
             NavigationView {
                 VStack {
+                    TextField("Search for Cafes", text: $searchText)
+                        .padding(.leading, 30)
+                        .padding(7)
+                        .background(
+                            Color(.systemGray6)
+                                .cornerRadius(8)
+                                .overlay(
+                                    HStack {
+                                        Image(systemName: "magnifyingglass")
+                                            .foregroundColor(.gray)
+                                            .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                                            .padding(.leading, 8)
+                                    }
+                                )
+                        )
+                        .padding(.horizontal)
+                    
                     if let location = locationManager.location {
                         MapView(location: location, cafes: cafes)
                             .onAppear {
@@ -26,7 +44,7 @@ struct CafeView: View {
                     } else {
                         Text("Fetching location...")
                     }
-                    List(cafes, id: \.mapItem) { cafe in
+                    List(filteredCafes(), id: \.mapItem) { cafe in
                         NavigationLink(destination: CafeDetailView(cafe: cafe)) {
                             VStack(alignment: .leading) {
                                 Text(cafe.mapItem.name ?? "Unknown")
@@ -43,8 +61,17 @@ struct CafeView: View {
                     }
                 }
                 .navigationTitle("Nearby Study Spots")
-//                .background(Color(hex: "#fbd3ce")
-//                    .ignoresSafeArea())
+            }
+        }
+    }
+    
+    // Function to filter cafes based on search text
+    private func filteredCafes() -> [Cafe] {
+        if searchText.isEmpty {
+            return cafes
+        } else {
+            return cafes.filter { cafe in
+                cafe.mapItem.name?.lowercased().contains(searchText.lowercased()) ?? false
             }
         }
     }
