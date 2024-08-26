@@ -32,6 +32,9 @@ struct RatingView: View {
             }
         }
     }
+    
+    // Function to "turn on" and "off" the color on the stars
+    // for when they're selected 
     func image(for number: Int) -> Image {
         if number > Int(rating) {
             return offImage ?? onImage

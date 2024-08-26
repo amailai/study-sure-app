@@ -18,6 +18,9 @@ struct CafeDetailView: View {
     @State private var review = ""
     @State private var rating: Double = 0
     @State private var selectedKeywords: [String] = []
+    // extra variables for a detailed review pop-up
+//    @State private var showingDetail = false
+//    @State private var selectedReview: Review?
     
 
     var body: some View {
@@ -92,7 +95,6 @@ struct CafeDetailView: View {
                         }
                     }
                     
-                    
                    // section for reviews
                     Text("Reviews")
                         .font(.headline)
@@ -117,6 +119,7 @@ struct CafeDetailView: View {
             }
             .navigationTitle("Cafe Details")
             .blur(radius: showReview ? 3 : 0)
+
 
             // Fixed position button in bottom right
             VStack {
