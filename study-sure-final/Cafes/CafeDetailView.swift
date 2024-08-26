@@ -45,19 +45,6 @@ struct CafeDetailView: View {
                     }
                     
                     Text("Seats Available: \(cafe.seatsAvailable)")
-    
-                    // Photo carousel
-//                    TabView {
-//                        ForEach(images, id: \.self) { imgName in
-//                            Image(imgName)
-//                                .resizable()
-//                                .aspectRatio(contentMode: .fill)
-//                                .clipShape(RoundedRectangle(cornerRadius: 10))
-//                                .padding()
-//                        }
-//                    }
-//                    .tabViewStyle(PageTabViewStyle())
-//                    .frame(height: 300)
                     
                     let existingImages = ["farine", "farine2", "farine3"]
                     let reviewImages = reviewsViewModel.reviews.flatMap { $0.imageUrls }
@@ -71,9 +58,8 @@ struct CafeDetailView: View {
                                     Image(imageName)
                                         .resizable()
                                         .scaledToFill()
-                                        .frame(height: 300)
-                                        .clipped()
-                                        .cornerRadius(10)
+                                        .frame(width: 350, height: 300)
+                                        .cornerRadius(10)  // Apply corner radius
                                         .padding()
                                 } else if let imageUrl = imageItem.imageUrl {
                                     AsyncImage(url: URL(string: imageUrl)) { image in
@@ -82,9 +68,8 @@ struct CafeDetailView: View {
                                     } placeholder: {
                                         ProgressView()
                                     }
-                                    .frame(height: 300)
-                                    .clipped()
-                                    .cornerRadius(10)
+                                    .frame(width: 350, height: 300)
+                                    .cornerRadius(10)  // Apply corner radius
                                     .padding()
                                 }
                             }
