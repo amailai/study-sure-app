@@ -13,7 +13,6 @@ import FirebaseFirestoreSwift
 
 struct CafeDetailView: View {
     @ObservedObject var cafe: Cafe
-//    let images = ["farine", "farine2", "farine3"]
     @StateObject private var reviewsViewModel = ReviewsViewModel()
     @State private var showReview = false
     @State private var review = ""
@@ -76,6 +75,21 @@ struct CafeDetailView: View {
                         }
                         .tabViewStyle(PageTabViewStyle())
                         .frame(height: 300)
+                    }
+                    
+                    // section for keywords
+                    let uniqueKeywords = Set(reviewsViewModel.reviews.flatMap { $0.keywords })
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach(uniqueKeywords.sorted(), id: \.self) { keyword in
+                                Text(keyword)
+                                    .padding(8)
+                                    .background(Color.blue)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(10)
+                                    .padding(2)
+                            }
+                        }
                     }
                     
                     
