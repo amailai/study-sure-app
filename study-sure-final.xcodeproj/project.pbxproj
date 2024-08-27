@@ -119,6 +119,7 @@
 			children = (
 				F0410E152C57198600E1538A /* AuthViewModel.swift */,
 				F06AC6FD2C618AB300CCDE15 /* ReviewsViewModel.swift */,
+				F00135132C7BD13A00F87268 /* UserViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -232,7 +233,6 @@
 			children = (
 				F0CB09C22C4B3E9300A05452 /* User.swift */,
 				F06AC6FB2C61749B00CCDE15 /* Review.swift */,
-				F00135132C7BD13A00F87268 /* UserViewModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";

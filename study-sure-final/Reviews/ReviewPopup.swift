@@ -26,7 +26,7 @@ struct ReviewPopup: View {
     var maxSeats: Int // pass total number of seats
     
     
-    let allKeywords = ["Cozy", "Spacious", "Quiet", "Busy", "Friendly Staff", "Great Coffee", "Affordable"]
+    let allKeywords = ["Cozy", "Spacious", "Quiet", "Busy", "Friendly Staff", "Great Coffee", "Affordable", "Wifi", "Indoor Seating", "Outdoor Seating", "Great Food", "Vegetarian Options", "GF Options"]
     
     var body: some View {
         VStack {
