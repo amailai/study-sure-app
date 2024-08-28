@@ -19,6 +19,7 @@ class AuthViewModel: ObservableObject {
     @Published var userSession: FirebaseAuth.User?
     // our created user obj
     @Published var currentUser: User?
+    @Published var userReviews: [Review] = []
     
     init() {
         // cache information if someone is logged in on the device
@@ -81,5 +82,52 @@ class AuthViewModel: ObservableObject {
         guard let snapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else { return }
         self.currentUser = try? snapshot.data(as: User.self)
         print("DEBUG: current user is \(self.currentUser)")
+    }
+    
+    // Function to display users reviews on their profile view
+    func fetchUserReviews() {
+        guard let userId = userSession?.uid else { return }
+        
+        let db = Firestore.firestore()
+        db.collection("reviews")
+            .whereField("userId", isEqualTo: userId)
+            .getDocuments { [weak self] snapshot, error in
+                if let error = error {
+                    print("Error getting documents: \(error)")
+                    return
+                }
+                guard let documents = snapshot?.documents else {
+                    print("No documents found")
+                    return
+                }
+                
+                var reviewsWithPendingCafeNames: [Review] = documents.compactMap { doc -> Review? in
+                    var review = try? doc.data(as: Review.self)
+                    review?.cafeName = "loading cafe name..."
+                    self?.fetchCafeName(for: review)
+                    return review
+                }
+                self?.userReviews = reviewsWithPendingCafeNames
+            }
+    }
+    
+    func fetchCafeName(for review: Review?) {
+        guard let cafeId = review?.cafeId else { return }
+        
+        let db = Firestore.firestore()
+        db.collection("cafes").document(cafeId).getDocument { documentSnapshot, error in
+            if let error = error {
+                print("Error fetching cafe name: \(error)")
+                return
+            }
+            if let document = documentSnapshot, document.exists,
+               let cafeName = document.data()?["name"] as? String {
+                DispatchQueue.main.async {
+                    if let index = self.userReviews.firstIndex(where: { $0.id == review?.id }) {
+                        self.userReviews[index].cafeName = cafeName
+                    }
+                }
+            }
+        }
     }
 }

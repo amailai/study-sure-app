@@ -30,21 +30,6 @@ struct ReviewView: View {
                 
                 Text(review.comment)
                     .padding(.top, 2)
-                
-//                // code to display keywords on the review itself
-//                ScrollView(.horizontal, showsIndicators: false) {
-//                    HStack {
-//                        ForEach(review.keywords, id: \.self) { keyword in
-//                            Text(keyword)
-//                                .padding(5)
-//                                .background(Color.blue)
-//                                .foregroundColor(.white)
-//                                .cornerRadius(5)
-//                                .padding(.horizontal, 4)
-//                            }
-//                        }
-//                        .padding(.horizontal, 10)
-//                    }
             }
             .padding()
             .background(Color.secondary.opacity(0.1))

@@ -38,6 +38,28 @@ struct ProfileView: View {
                     
                 }
                 
+                Section("My Reviews") {
+                    ForEach(viewModel.userReviews, id: \.id) { review in
+                        VStack(alignment: .leading) {
+                            Text(review.cafeName ?? "Unknown Cafe")
+                                .font(.headline)
+                            
+                            // Star rating display
+                            HStack {
+                                ForEach(1...5, id: \.self) { index in
+                                    Image(systemName: index <= Int(review.rating) ? "star.fill" : "star")
+                                        .foregroundColor(index <= Int(review.rating) ? .yellow : .gray)
+                                }
+                            }
+                            .padding(4)
+                            
+                            Text(review.comment)
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                }
+                
                 Section("Account") {
                     Button {
                         viewModel.signOut()
@@ -50,6 +72,9 @@ struct ProfileView: View {
                         SettingsView(imageName: "xmark.circle.fill", title: "Delete Account", tintColor: .red)
                     }
                 }
+            }
+            .onAppear{
+                viewModel.fetchUserReviews() // fetch user reviews when opening profile view
             }
         }
     }
