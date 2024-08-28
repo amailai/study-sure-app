@@ -18,15 +18,12 @@ struct CafeDetailView: View {
     @State private var review = ""
     @State private var rating: Double = 0
     @State private var selectedKeywords: [String] = []
-    // extra variables for a detailed review pop-up
-//    @State private var showingDetail = false
-//    @State private var selectedReview: Review?
+    @State private var selectedReview: Review?
+    @State private var showingDetail = false
     
 
     var body: some View {
         ZStack {
-//            Color(hex: "#fbd3ce")
-//                .ignoresSafeArea()
             ScrollView {
                 VStack(alignment: .leading) {
                     Text(cafe.mapItem.name ?? "Unknown Cafe")
@@ -51,7 +48,7 @@ struct CafeDetailView: View {
                     let existingImages = ["farine", "farine2", "farine3"]
                     let reviewImages = reviewsViewModel.reviews.flatMap { $0.imageUrls }
                     let allImages = existingImages.map { ImageItem(imageUrl: nil, imageName: $0) } +
-                                    reviewImages.map { ImageItem(imageUrl: $0, imageName: nil) }
+                    reviewImages.map { ImageItem(imageUrl: $0, imageName: nil) }
                     // Display photos associated with the cafe's reviews
                     if !allImages.isEmpty {
                         TabView {
@@ -95,18 +92,22 @@ struct CafeDetailView: View {
                         }
                     }
                     
-                   // section for reviews
+                    // section for reviews
                     Text("Reviews")
                         .font(.headline)
                         .padding(.top)
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
                             if !reviewsViewModel.reviews.isEmpty {
-                                                ForEach(reviewsViewModel.reviews) { review in
-                                                    ReviewView(review: review)
-                                                        .frame(width: 250) // set a fixed width for each review
-                                                        .padding(.trailing, 5) // space between reviews
-                                                }
+                                ForEach(reviewsViewModel.reviews) { review in
+                                    ReviewView(review: review)
+                                        .frame(width: 250) // set a fixed width for each review
+                                        .padding(.trailing, 5) // space between reviews
+                                        .onTapGesture {
+                                            self.selectedReview = review
+                                            self.showingDetail = true
+                                        }
+                                }
                             } else {
                                 Text("No reviews yet. Be the first to write one!")
                                     .padding()
@@ -117,6 +118,7 @@ struct CafeDetailView: View {
                 }
                 .padding()
             }
+            
             .navigationTitle("Cafe Details")
             .blur(radius: showReview ? 3 : 0)
 
@@ -151,6 +153,10 @@ struct CafeDetailView: View {
                 )
             }
 
+            // Present detailed review when a review is selected
+            if showingDetail {
+                ReviewDetailView(review: selectedReview, isPresented: $showingDetail)
+            }
             
         }
         .onAppear {

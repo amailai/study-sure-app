@@ -31,7 +31,7 @@ struct LoginView: View {
                         InputView(text: $email, title: "Email Address", placeholder: "name@example.com")
                             .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
                         
-                        InputView(text: $password, title: "Password", placeholder: "Enter your password", isSecureField: true)
+                        InputView(text: $password, title: "Password", placeholder: "Enter your password" )
                     }
                     .padding(.horizontal)
                     .padding(.top, 12)

@@ -101,7 +101,7 @@ class AuthViewModel: ObservableObject {
                     return
                 }
                 
-                var reviewsWithPendingCafeNames: [Review] = documents.compactMap { doc -> Review? in
+                let reviewsWithPendingCafeNames: [Review] = documents.compactMap { doc -> Review? in
                     var review = try? doc.data(as: Review.self)
                     review?.cafeName = "loading cafe name..."
                     self?.fetchCafeName(for: review)
