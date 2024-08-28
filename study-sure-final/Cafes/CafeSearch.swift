@@ -19,13 +19,15 @@ class Cafe: ObservableObject, Identifiable {
     // once back in davis or something
     @Published var maxSeats: Int
     @Published var seatsAvailable: Int
+    @Published var lastUpdated: Date?
     var identifier: String // use MKMapItem's placeID (unique identifier)
     
-    init(mapItem: MKMapItem, distance: CLLocationDistance?, seatsAvailable: Int = 60, maxSeats: Int = 60) {
+    init(mapItem: MKMapItem, distance: CLLocationDistance?, seatsAvailable: Int = 60, maxSeats: Int = 60, lastUpdated: Date? = nil) {
         self.mapItem = mapItem
         self.distance = distance
         self.maxSeats = maxSeats
         self.seatsAvailable = seatsAvailable
+        self.lastUpdated = lastUpdated
         // create a unique identifier from the latitude and longtitude
         // of each cafe
         if let coordinate = mapItem.placemark.location?.coordinate {
@@ -42,12 +44,17 @@ class Cafe: ObservableObject, Identifiable {
             if let document = documentSnapshot, document.exists {
                 if let seatsAvailable = document.data()?["seatsAvaliable"] as? Int {
                     DispatchQueue.main.async {
-                    self.seatsAvailable = seatsAvailable
+                        self.seatsAvailable = seatsAvailable
                     }
                 }
                 if let maxSeats = document.data()?["maxSeats"] as? Int {
                     DispatchQueue.main.async {
                         self.maxSeats = maxSeats
+                    }
+                }
+                if let lastUpatedTimestamp = document.data()?["lastUpdated"] as? Timestamp {
+                    DispatchQueue.main.async {
+                        self.lastUpdated = lastUpatedTimestamp.dateValue()
                     }
                 }
                     
@@ -65,7 +72,8 @@ class Cafe: ObservableObject, Identifiable {
             "address" : self.mapItem.placemark.title ?? "No Address",
             "coordinates" : "\(self.mapItem.placemark.coordinate.latitude), \(self.mapItem.placemark.coordinate.longitude)",
             "seatsAvailable": self.seatsAvailable,
-            "maxSeats": self.maxSeats
+            "maxSeats": self.maxSeats,
+            "lastUpdated": Timestamp(date: Date())
         ]) { error in
             if let error = error {
                 print("Error saving cafe: \(error.localizedDescription)")

@@ -98,110 +98,139 @@ struct ReviewPopup: View {
     }
     
     func submitReview() {
-            guard let userId = viewModel.userSession?.uid else {
-                print("Error: user is not logged in")
-                return
-            }
-            
-            guard let seats = Int(availableSeats), seats <= maxSeats else {
-                print("Invalid number of seats. Must be between 0 and \(maxSeats).")
-                return
-            }
-            
-            if selectedImages.isEmpty {
-                // No images selected, submit review without images
+        guard let userId = viewModel.userSession?.uid else {
+            print("Error: user is not logged in")
+            return
+        }
+        
+        guard let seats = Int(availableSeats), seats <= maxSeats else {
+            print("Invalid number of seats. Must be between 0 and \(maxSeats).")
+            return
+        }
+        
+        
+        if selectedImages.isEmpty {
+            // No images selected, submit review without images
+            let newReview = Review(
+                userId: userId,
+                cafeId: cafeId,
+                rating: rating,
+                comment: review,
+                keywords: selectedKeywords,
+                imageUrls: [] // No images
+            )
+            saveReviewToFirestore(newReview: newReview, availableSeats: seats)
+        } else {
+            // Images selected, upload them first
+            uploadImages { urls in
                 let newReview = Review(
                     userId: userId,
                     cafeId: cafeId,
                     rating: rating,
                     comment: review,
                     keywords: selectedKeywords,
-                    imageUrls: [] // No images
+                    imageUrls: urls // Include uploaded image URLs
                 )
                 saveReviewToFirestore(newReview: newReview, availableSeats: seats)
-            } else {
-                // Images selected, upload them first
-                uploadImages { urls in
-                    let newReview = Review(
-                        userId: userId,
-                        cafeId: cafeId,
-                        rating: rating,
-                        comment: review,
-                        keywords: selectedKeywords,
-                        imageUrls: urls // Include uploaded image URLs
-                    )
-                    saveReviewToFirestore(newReview: newReview, availableSeats: seats)
+            }
+        }
+    }
+
+    
+    func uploadImages(completion: @escaping ([String]) -> Void) {
+        let storage = Storage.storage()
+        var uploadedImageUrls: [String] = []
+        
+        for image in selectedImages {
+            let imageData = image.jpegData(compressionQuality: 0.8)
+            let fileName = UUID().uuidString
+            let storageRef = storage.reference().child("cafe_images/\(cafeId)/\(fileName).jpg")
+            
+            let metadata = StorageMetadata()
+            metadata.contentType = "image/jpeg"
+            
+            storageRef.putData(imageData!, metadata: metadata) { metadata, error in
+                if let error = error {
+                    print("Error uploading image: \(error.localizedDescription)")
+                    return
+                }
+                
+                storageRef.downloadURL { url, error in
+                    if let error = error {
+                        print("Error fetching download URL: \(error.localizedDescription)")
+                        return
+                    }
+                    
+                    if let url = url {
+                        uploadedImageUrls.append(url.absoluteString)
+                        
+                        // If all images are uploaded, return the URLs
+                        if uploadedImageUrls.count == self.selectedImages.count {
+                            completion(uploadedImageUrls)
+                        }
+                    }
                 }
             }
         }
+        
+    }
     
-    private func saveReviewToFirestore(newReview: Review, availableSeats: Int) {
-            let db = Firestore.firestore()
+    
+    private func updateCafeAndSubmitReview(newReview: Review, cafeId: String, availableSeats: Int, completion: @escaping (Bool) -> Void) {
+        let db = Firestore.firestore()
+        let timestamp = FieldValue.serverTimestamp()  // Server-side timestamp for accurate "lastUpdated" field
+
+        db.runTransaction({ (transaction, errorPointer) -> Any? in
+            // Get a reference to the cafe document
+            let cafeDocument = db.collection("cafes").document(cafeId)
+            
+            // Update the cafe's available seats and last updated timestamp
+            transaction.updateData([
+                "seatsAvailable": availableSeats,
+                "lastUpdated": timestamp  // Automatically set the server timestamp
+            ], forDocument: cafeDocument)
+            
+            // Get a reference to the review document (Firestore auto-generates the ID)
+            let reviewDocument = db.collection("reviews").document()
+            
             do {
-                try db.collection("reviews").addDocument(from: newReview)
-                print("Review added successfully.")
-                updateCafeAvailableSeats(cafeId: cafeId, availableSeats: availableSeats)  // Update cafe info
-                withAnimation {
+                // Encode the new review into Firestore data
+                let reviewData = try Firestore.Encoder().encode(newReview)
+                // Add the new review document to the reviews collection
+                transaction.setData(reviewData, forDocument: reviewDocument)
+            } catch let encodeError {
+                errorPointer?.pointee = encodeError as NSError
+                return nil
+            }
+
+            return nil
+        }) { object, error in
+            if let error = error {
+                print("Transaction failed: \(error)")
+                completion(false)
+            } else {
+                print("Review and cafe update successfully committed.")
+                completion(true)
+            }
+        }
+    }
+
+    private func saveReviewToFirestore(newReview: Review, availableSeats: Int) {
+        updateCafeAndSubmitReview(newReview: newReview, cafeId: cafeId, availableSeats: availableSeats) { success in
+            withAnimation {
+                if success {
                     showReview = false
                     review = ""
                     rating = 0
                     selectedKeywords = []
                     selectedImages = []
-                }
-            } catch let error {
-                print("Error adding review: \(error.localizedDescription)")
-            }
-        }
-        
-        func uploadImages(completion: @escaping ([String]) -> Void) {
-            let storage = Storage.storage()
-            var uploadedImageUrls: [String] = []
-            
-            for image in selectedImages {
-                let imageData = image.jpegData(compressionQuality: 0.8)
-                let fileName = UUID().uuidString
-                let storageRef = storage.reference().child("cafe_images/\(cafeId)/\(fileName).jpg")
-                
-                let metadata = StorageMetadata()
-                metadata.contentType = "image/jpeg"
-                
-                storageRef.putData(imageData!, metadata: metadata) { metadata, error in
-                    if let error = error {
-                        print("Error uploading image: \(error.localizedDescription)")
-                        return
-                    }
-                    
-                    storageRef.downloadURL { url, error in
-                        if let error = error {
-                            print("Error fetching download URL: \(error.localizedDescription)")
-                            return
-                        }
-                        
-                        if let url = url {
-                            uploadedImageUrls.append(url.absoluteString)
-                            
-                            // If all images are uploaded, return the URLs
-                            if uploadedImageUrls.count == self.selectedImages.count {
-                                completion(uploadedImageUrls)
-                            }
-                        }
-                    }
-                }
-            }
-            
-        }
-        
-        private func updateCafeAvailableSeats(cafeId: String, availableSeats: Int) {
-            let db = Firestore.firestore()
-            db.collection("cafes").document(cafeId).updateData([
-                "seatsAvailable": availableSeats
-            ]) { error in
-                if let error = error {
-                    print("Error updating cafe seats: \(error.localizedDescription)")
                 } else {
-                    print("Cafe seats updated successfully")
+                    print("Failed to save review or update cafe")
                 }
             }
         }
     }
+
+    
+}
 

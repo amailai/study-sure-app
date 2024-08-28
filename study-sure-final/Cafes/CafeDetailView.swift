@@ -44,6 +44,15 @@ struct CafeDetailView: View {
                     }
                     
                     Text("Seats Available: \(cafe.seatsAvailable)")
+                    if let lastUpdated = cafe.lastUpdated {
+                        Text("Last Updated: \(lastUpdated.timeAgoDisplay())")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    } else {
+                        Text("Last Updated: Not avaliable")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }
                     
                     let existingImages = ["farine", "farine2", "farine3"]
                     let reviewImages = reviewsViewModel.reviews.flatMap { $0.imageUrls }
@@ -174,6 +183,11 @@ struct CafeDetailView: View {
                     }
                     
                 }
+                if let lastUpdatedTimestamp = document.data()?["lastUpdated"] as? Timestamp {
+                            DispatchQueue.main.async {
+                                cafe.lastUpdated = lastUpdatedTimestamp.dateValue()
+                    }
+                }
                     
                     
             }
@@ -185,6 +199,14 @@ struct ImageItem: Identifiable {
     var id = UUID()
     var imageUrl: String?
     var imageName: String?
+}
+
+extension Date {
+    func timeAgoDisplay() -> String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full
+        return formatter.localizedString(for: self, relativeTo: Date())
+    }
 }
                                                                                                                                     
 
